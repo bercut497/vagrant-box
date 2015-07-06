@@ -43,6 +43,6 @@ BOX="${ISO_FILE:0:12}-${ARCH}"
 #ISO_MD5="72045f21b78824023ad665c2ef387c26"
 
 #debug enable
-#export VM_GUI='yes';
+export VM_GUI='yes';
 
 ./build.sh ${BUILD_OSNAME} ${OS_TYPE} ${BOX} ${ISO_URL} ${ISO_MD5}

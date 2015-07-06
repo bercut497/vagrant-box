@@ -62,6 +62,10 @@ PRESEED="${PRESEED:-"$DEFAULT_PRESEED"}"
 DEFAULT_ISOLINUX="${FOLDER_ROOT}/isolinux.cfg"
 ISOLINUX="${ISOLINUX:-"$DEFAULT_ISOLINUX"}"
 
+# Env option: Use custom initzerofree or default
+DEFAULT_ZF_CMD="${FOLDER_ROOT}/initzerofree.sh"
+ZF_CMD="${ZF_CMD:-"$DEFAULT_ZF_CMD"}"
+
 # Env option: Use custom late_command.sh or default
 DEFAULT_LATE_CMD="${FOLDER_ROOT}/late_command.sh"
 LATE_CMD="${LATE_CMD:-"$DEFAULT_LATE_CMD"}"
@@ -201,6 +205,12 @@ if [ ! -e "${FOLDER_ISO}/custom.iso" ]; then
   echo "Add late_command script ..."
   chmod u+w "${FOLDER_ISO_CUSTOM}"
   cp "${LATE_CMD}" "${FOLDER_ISO_CUSTOM}/late_command.sh"
+  cp "${ZF_CMD}" "${FOLDER_ISO_CUSTOM}/initzerofree.sh"
+
+  mkdir -p "${FOLDER_ISO_CUSTOM}/VBA"
+  if [[ -f "/usr/share/virtualbox/VBoxGuestAdditions.iso" ]]; then
+    7z x "/usr/share/virtualbox/VBoxGuestAdditions.iso" -o"${FOLDER_ISO_CUSTOM}/VBA"
+  fi  
 
   echo "Running mkisofs ..."
   "$MKISOFS" -r -V "Custom Install CD" \
@@ -277,7 +287,7 @@ if ! VBoxManage showvminfo "${BOX}" >/dev/null 2>&1; then
     --type dvddrive \
     --medium additions
 
-# start VM with additions in 
+# start VM with additions.iso in 
 # + reboot with custom init for
 # zerofree disk space
   ${STARTVM}
